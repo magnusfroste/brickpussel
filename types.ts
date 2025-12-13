@@ -22,6 +22,14 @@ export interface GameState {
   elapsedTime: number;
 }
 
+export interface ScoreDetails {
+  total: number;
+  basePoints: number;
+  moveBonus: number;
+  timeBonus: number;
+  isNewHigh: boolean;
+}
+
 export type Theme = {
   id: string;
   name: string;

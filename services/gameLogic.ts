@@ -1,3 +1,5 @@
+import { Level, ScoreDetails } from "../types";
+
 /**
  * Checks if a move is valid based on the empty slot position.
  */
@@ -21,38 +23,84 @@ export const createSolvedGrid = (size: number): number[] => {
 };
 
 /**
- * Shuffles the grid by performing random valid moves.
- * This guarantees the puzzle is solvable.
+ * Calculates inversion count to check solvability.
  */
-export const shuffleGrid = (size: number, complexity: number = 100): { tiles: number[], emptyIndex: number } => {
-  const tiles = createSolvedGrid(size);
-  let emptyIndex = size * size - 1; // Last one is empty by default
-  let previousIndex = -1;
+const getInversionCount = (arr: number[], size: number): number => {
+  let invCount = 0;
+  const total = size * size;
+  // Iterate through the array (ignoring the empty slot represented by total-1)
+  for (let i = 0; i < total - 1; i++) {
+    for (let j = i + 1; j < total; j++) {
+      // Skip the empty tile in comparison
+      if (arr[i] !== total - 1 && arr[j] !== total - 1 && arr[i] > arr[j]) {
+        invCount++;
+      }
+    }
+  }
+  return invCount;
+};
 
-  for (let i = 0; i < complexity; i++) {
-    const neighbors: number[] = [];
-    const row = Math.floor(emptyIndex / size);
-    const col = emptyIndex % size;
-
-    if (row > 0) neighbors.push(emptyIndex - size); // Up
-    if (row < size - 1) neighbors.push(emptyIndex + size); // Down
-    if (col > 0) neighbors.push(emptyIndex - 1); // Left
-    if (col < size - 1) neighbors.push(emptyIndex + 1); // Right
-
-    // Filter out the tile we just moved to prevent immediate backtracking (makes shuffle better)
-    const validNeighbors = neighbors.filter(n => n !== previousIndex);
+/**
+ * Checks if a given grid configuration is solvable.
+ * Rules:
+ * 1. If N is Odd: Solvable if Inversion Count is Even.
+ * 2. If N is Even:
+ *    - If Empty is on Even row from bottom: Solvable if Inversion Count is Odd.
+ *    - If Empty is on Odd row from bottom: Solvable if Inversion Count is Even.
+ */
+const isSolvable = (tiles: number[], size: number): boolean => {
+  const invCount = getInversionCount(tiles, size);
+  const emptyValue = size * size - 1;
+  
+  if (size % 2 !== 0) {
+    // Odd grid size
+    return invCount % 2 === 0;
+  } else {
+    // Even grid size
+    const emptyIndex = tiles.indexOf(emptyValue);
+    const rowFromBottom = size - Math.floor(emptyIndex / size); // 1-based index from bottom
     
-    // Pick a random neighbor to swap
-    const randomNeighbor = validNeighbors[Math.floor(Math.random() * validNeighbors.length)];
+    if (rowFromBottom % 2 === 0) {
+      return invCount % 2 !== 0;
+    } else {
+      return invCount % 2 === 0;
+    }
+  }
+};
 
-    // Swap
-    tiles[emptyIndex] = tiles[randomNeighbor];
-    tiles[randomNeighbor] = size * size - 1; // The empty value (conceptually)
-
-    previousIndex = emptyIndex;
-    emptyIndex = randomNeighbor;
+/**
+ * Shuffles the grid by placing ALL tiles randomly (Fisher-Yates) and fixing solvability.
+ * This guarantees a truly random "scattered" board where the hole can be anywhere.
+ */
+export const shuffleGrid = (size: number): { tiles: number[], emptyIndex: number } => {
+  const totalTiles = size * size;
+  const emptyValue = totalTiles - 1;
+  
+  // 1. Create array of ALL available numbers including the hole
+  let tiles = Array.from({ length: totalTiles }, (_, i) => i);
+  
+  // 2. Fisher-Yates Shuffle EVERYTHING
+  for (let i = tiles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+  }
+  
+  // 3. Check Solvability
+  if (!isSolvable(tiles, size)) {
+    // If not solvable, we simply swap the first two tiles (that are NOT the empty one).
+    // Swapping any two adjacent tiles changes inversion parity by 1, making it solvable.
+    
+    let i = 0;
+    let j = 1;
+    
+    // Find two indices that are not the empty tile
+    while (tiles[i] === emptyValue) i++;
+    while (tiles[j] === emptyValue || j === i) j++;
+    
+    [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
   }
 
+  const emptyIndex = tiles.indexOf(emptyValue);
   return { tiles, emptyIndex };
 };
 
@@ -64,4 +112,39 @@ export const checkWin = (tiles: number[]): boolean => {
     if (tiles[i] !== i) return false;
   }
   return true;
+};
+
+/**
+ * Calculates score based on level difficulty, moves, and time.
+ */
+export const calculateScore = (level: Level, moves: number, timeSeconds: number, currentHighScore: number): ScoreDetails => {
+  // 1. Base Points: Higher levels give significantly more points
+  // Level 1 (2x2) = 500
+  // Level 7 (8x8) = 3500
+  const basePoints = level.level * 500;
+
+  // 2. Move Bonus:
+  // Par moves gives a baseline. Beating par gives bonus. 
+  // Being way over par reduces bonus to 0.
+  // Formula: Starting buffer is (Par * 2). Subtract actual moves. Multiply by weight.
+  const movesWeight = 10 * level.level; // Harder levels reward move efficiency more
+  const moveDiff = Math.max(0, (level.parMoves * 2) - moves);
+  const moveBonus = Math.floor(moveDiff * (10 + level.level)); 
+
+  // 3. Time Bonus:
+  // Faster is better. 
+  // Max time window varies by level (e.g., 60s for level 1, 600s for level 7)
+  const maxTime = 60 + (level.level * 60); 
+  const timeDiff = Math.max(0, maxTime - timeSeconds);
+  const timeBonus = Math.floor(timeDiff * 5);
+
+  const total = basePoints + moveBonus + timeBonus;
+
+  return {
+    total,
+    basePoints,
+    moveBonus,
+    timeBonus,
+    isNewHigh: total > currentHighScore
+  };
 };
