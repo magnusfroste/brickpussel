@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface TileProps {
-  value: number; // The correct index of this tile (determines image slice)
-  size: number; // Grid size (e.g., 4 for 4x4)
+  value: number;
+  size: number;
   isEmpty: boolean;
   onClick: () => void;
   imageUrl: string;
@@ -10,20 +10,13 @@ interface TileProps {
 }
 
 const Tile: React.FC<TileProps> = ({ value, size, isEmpty, onClick, imageUrl, style }) => {
-  // If empty, we render it invisible but present in the DOM for animations (if we wanted to animate the hole)
-  // or just hidden. For the "sliding" effect, the hole "moves" to the tile's old spot.
-  // We'll render it as a placeholder that moves, but make it invisible so we see the board background.
+  // If empty, render nothing (invisible), allowing the board background (the "hole") to show.
   if (isEmpty) {
-    return (
-      <div 
-        className="absolute rounded-lg transition-all duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)]"
-        style={{ ...style, zIndex: 0, opacity: 0 }} 
-      />
-    );
+    return null;
   }
 
   // Calculate position in percentage for background image
-  // value 0 is top-left, value size*size-1 is bottom-right
+  // This maps the image slice to the tile position
   const colIndex = value % size;
   const rowIndex = Math.floor(value / size);
 
@@ -33,32 +26,34 @@ const Tile: React.FC<TileProps> = ({ value, size, isEmpty, onClick, imageUrl, st
   return (
     <button
       onClick={onClick}
-      className="absolute group transition-all duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)] cursor-pointer"
+      className="absolute transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer" // Custom bezier for a slight "snap" effect
       style={{
         ...style,
-        zIndex: 10, // Ensure tiles are above the empty slot background if they cross
+        zIndex: 10,
+        // We use left/top for positioning now, which is passed in via style
       }}
-      aria-label={`Tile ${value + 1}`}
+      aria-label={`Flytta bricka ${value + 1}`}
     >
       <div 
-        className="w-full h-full rounded-md overflow-hidden shadow-lg border border-white/10 relative transform transition-transform duration-150 active:scale-95 hover:scale-[1.02]"
+        className="w-full h-full rounded-md sm:rounded-lg overflow-hidden shadow-md border border-white/10 relative group transform transition-transform duration-100 active:scale-95 hover:brightness-110"
       >
         <div
           className="absolute inset-0 bg-cover no-repeat"
           style={{
             backgroundImage: `url(${imageUrl})`,
             backgroundPosition: `${xPercent}% ${yPercent}%`,
+            // Scale image to cover the "conceptual" board area roughly
             backgroundSize: `${size * 100}%`,
           }}
         />
         
-        {/* Number overlay */}
-        <div className="absolute top-1 left-1 bg-black/40 text-white text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded backdrop-blur-sm opacity-50 group-hover:opacity-100 transition-opacity">
+        {/* Subtle Number overlay */}
+        <div className="absolute top-1 left-1 bg-black/30 text-white/90 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded backdrop-blur-[2px] opacity-60 group-hover:opacity-100 transition-opacity">
           {value + 1}
         </div>
         
-        {/* Glossy effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
+        {/* Highlight/Gloss */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-black/20 pointer-events-none" />
       </div>
     </button>
   );
