@@ -6,6 +6,8 @@ rutan för att skjuta dem på plats, tills siffrorna eller bilden ligger i rätt
 
 **Spela:** https://brickpussel.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
+![Brickpussel](public/kort.png)
+
 Började som ett Google AI Studio-projekt och körs nu fristående.
 
 ## Vad du kan göra
