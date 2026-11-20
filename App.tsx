@@ -3,7 +3,6 @@ import { RotateCcw, Award, Clock, Move, Grid3X3, ArrowRight, Star, Lock, BookOpe
 import Board from './components/Board';
 import { Theme, Level, ScoreDetails } from './types';
 import { shuffleGrid, canMove, checkWin, createSolvedGrid, calculateScore } from './services/gameLogic';
-import { generateVictoryMessage } from './services/geminiService';
 
 // --- CONFIGURATION ---
 
@@ -201,9 +200,7 @@ export default function App() {
       setShowLevelUp(true);
     }
     
-    // Fetch AI Message
-    const msg = await generateVictoryMessage(currentLevel.gridSize, finalTime, finalMoves);
-    setVictoryMessage(msg);
+    setVictoryMessage("Grattis! Du löste pusslet!");
   };
 
   // --- DEMO MODE LOOP ---

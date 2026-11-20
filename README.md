@@ -47,10 +47,7 @@ Servern ligger bakom nginx med `deploy/nginx.conf`.
   `brickpussel_highscores`.
 - Bilderna ligger i `public/images/` och typsnittet Fredoka i `public/fonts/` – inget hämtas
   från andra servrar.
-- Koden har kvar ett valfritt anrop till Google Gemini för vinstmeddelandet
-  (`services/geminiService.ts`). Det används bara om `GEMINI_API_KEY` finns när appen byggs, och
-  då hamnar nyckeln i den publicerade koden. Dockerfilen sätter ingen nyckel, så utan den visas
-  ett fast grattismeddelande och inga anrop görs.
+- Vinstrutan visar ett fast grattismeddelande – appen anropar inga externa tjänster.
 
 ## Struktur
 
@@ -59,7 +56,6 @@ App.tsx                   nivåer, teman, poäng, demoläge, vinstruta
 components/Board.tsx      spelplanen
 components/Tile.tsx       en bricka (siffra, färg eller bildbit)
 services/gameLogic.ts     blandning, lösbarhet, vinstkontroll, poäng
-services/geminiService.ts valfritt vinstmeddelande via Gemini
 index.html                startskärm och typsnitt
 public/images/            bilderna till bildteman
 deploy/nginx.conf         nginx-konfiguration
