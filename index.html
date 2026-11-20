@@ -2,7 +2,7 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!-- SELFHOST-HEAD -->
     <title>Brickpussel – det klassiska skjutpusslet</title>
     <meta name="description" content="Brickpussel är det klassiska skjutpusslet för låg- och mellanstadiet: tryck på brickorna intill den tomma rutan tills siffrorna eller bilden ligger i rätt ordning. Från 2×2 upp till 8×8. Gratis, ingen inloggning, fungerar på iPad, mobil och dator." />
@@ -34,8 +34,6 @@
       }
       .no-scroll { touch-action: none; }
     </style>
-      <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <style>
 /* Fredoka - Skolappar-typsnitt */
 @font-face { font-family: 'Fredoka'; font-weight: 400; font-style: normal; font-display: swap; src: url('/fonts/fredoka-400.ttf') format('truetype'); }
@@ -44,12 +42,11 @@
 @font-face { font-family: 'Fredoka'; font-weight: 700; font-style: normal; font-display: swap; src: url('/fonts/fredoka-700.ttf') format('truetype'); }
 </style>
   <!-- ux-lager --><link rel="stylesheet" href="/ux.css">
-  <!-- pwa -->
-  <link rel="manifest" href="/manifest.webmanifest">
+  <!-- pwa -->  <meta name="apple-mobile-web-app-title" content="Brickpussel">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Brickpussel">
+  <link rel="manifest" href="/site.webmanifest">
 </head>
   <body class="bg-slate-900 text-slate-100 h-screen w-screen overflow-hidden selection:bg-indigo-500 selection:text-white">
     <div id="root"></div>
