@@ -1,70 +1,68 @@
-# Brickpussel 🧱
+# Brickpussel
 
-An AI-powered brick puzzle game built with Google Gemini AI. Solve brick puzzles with intelligent hints and guidance.
+Det klassiska skjutpusslet för låg- och mellanstadiet. Barnet trycker på brickorna intill den tomma
+rutan för att skjuta dem på plats, tills siffrorna eller bilden ligger i rätt ordning. Börjar på
+2×2 och går upp till 8×8.
 
-## Features
+**Spela:** https://brickpussel.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
-- **AI-Powered Hints**: Get intelligent puzzle-solving assistance
-- **Modern Interface**: Clean and responsive UI
-- **Easy Setup**: Simple configuration with API keys
-- **TypeScript**: Full type safety
+![Brickpussel](public/kort.png)
 
-## Getting Started
+Började som ett Google AI Studio-projekt och körs nu fristående.
 
-### Prerequisites
+## Vad du kan göra
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Google Gemini API key
+- **Sju nivåer**, från Uppvärmning (2×2) till Legend (8×8). Nästa nivå låses upp när du klarar
+  den du står på.
+- **Välj tema**: siffror, färgspektrum eller en av 17 bilder (hund, katt, lejon, tåg, pizza …).
+- **Demoläge** på startsidan: ett 3×3-pussel blandas och löser sig självt så att man ser hur
+  brickorna rör sig.
+- **Poäng** efter nivå, antal drag och tid, med rekord per nivå.
+- Blandningen ger alltid ett lösbart pussel.
+- Klickljud vid varje drag (Web Audio, inga ljudfiler).
+- Nivå och rekord sparas lokalt i webbläsaren.
 
-### Installation
+## Kom igång
 
 ```bash
 npm install
+npm run dev      # utvecklingsserver på port 3000
+npm run build    # produktionsbygge till dist/
+npm run preview  # förhandsgranska bygget
 ```
 
-### Run Locally
+Docker-bygget använder Node 22.
+
+## Docker
 
 ```bash
-# Set your Gemini API key in .env.local
-GEMINI_API_KEY=your_gemini_api_key
-
-npm run dev
+docker build -t brickpussel .
+docker run --rm -p 8080:8080 brickpussel
 ```
 
-### Self-Hosted Setup
+Servern ligger bakom nginx med `deploy/nginx.conf`.
 
-This application can be self-hosted easily:
+## Integritet
 
-1. **Get Your API Key**
-   - Go to [Google AI Studio](https://ai.google.dev)
-   - Create a new API key
+- Ingen inloggning, inga kakor, ingen analys.
+- Det som sparas är upplåst nivå och rekord, i `localStorage` under `brickpussel_level` och
+  `brickpussel_highscores`.
+- Bilderna ligger i `public/images/` och typsnittet Fredoka i `public/fonts/` – inget hämtas
+  från andra servrar.
+- Vinstrutan visar ett fast grattismeddelande – appen anropar inga externa tjänster.
 
-2. **Set Environment Variables**
-   ```bash
-   GEMINI_API_KEY=your_gemini_api_key
-   ```
+## Struktur
 
-3. **Run the Application**
-   ```bash
-   npm run dev
-   ```
-
-### Build for Production
-
-```bash
-npm run build
+```
+App.tsx                   nivåer, teman, poäng, demoläge, vinstruta
+components/Board.tsx      spelplanen
+components/Tile.tsx       en bricka (siffra, färg eller bildbit)
+services/gameLogic.ts     blandning, lösbarhet, vinstkontroll, poäng
+index.html                startskärm och typsnitt
+public/images/            bilderna till bildteman
+deploy/nginx.conf         nginx-konfiguration
 ```
 
-## Tech Stack
+## Licens
 
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **Google Gemini AI** - AI capabilities
-- **shadcn/ui** - Components
-- **Tailwind CSS** - Styling
-
-## License
-
-MIT
+MIT – se [LICENSE](LICENSE).
