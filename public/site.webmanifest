@@ -1,4 +1,7 @@
 {
+  "name": "Brickpussel – skjutpusslet",
+  "short_name": "Brickpussel",
+  "description": "Klassiskt skjutpussel för låg- och mellanstadiet. Träna logik och tålamod – inget kan gå förlorat.",
   "start_url": "/",
   "scope": "/",
   "lang": "sv",
