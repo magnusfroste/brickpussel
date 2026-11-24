@@ -3,6 +3,7 @@ import { RotateCcw, Award, Clock, Move, Grid3X3, ArrowRight, Star, Lock, BookOpe
 import Board from './components/Board';
 import { Theme, Level, ScoreDetails } from './types';
 import { shuffleGrid, canMove, checkWin, createSolvedGrid, calculateScore } from './services/gameLogic';
+import { report } from './skolappar';
 
 // --- CONFIGURATION ---
 
@@ -144,6 +145,8 @@ export default function App() {
     setLastScore(null); // Reset score
     setStartTime(Date.now());
     setElapsedTime(0);
+    report('round_start');
+    report('level', level.level);
   }, [currentLevelIndex]);
 
   const handleMove = (index: number) => {
@@ -182,6 +185,8 @@ export default function App() {
     const currentHigh = highScores[currentLevelIndex] || 0;
     const scoreResult = calculateScore(currentLevel, finalMoves, finalTime, currentHigh);
     setLastScore(scoreResult);
+    // Result: how close the child came to the level's par number of moves
+    report('round_done', Math.min(100, Math.round(currentLevel.parMoves / Math.max(1, finalMoves) * 100)));
 
     // Save High Score
     if (scoreResult.isNewHigh) {
