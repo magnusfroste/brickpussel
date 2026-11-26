@@ -4,7 +4,7 @@ Det klassiska skjutpusslet för låg- och mellanstadiet. Barnet trycker på bric
 rutan för att skjuta dem på plats, tills siffrorna eller bilden ligger i rätt ordning. Börjar på
 2×2 och går upp till 8×8.
 
-**Spela:** https://brickpussel.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
+**Spela:** https://brickpussel.skolappar.org · En del av [Skolappar](https://www.skolappar.org) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
 ![Brickpussel](public/kort.png)
 

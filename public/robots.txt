@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://brickpussel.skolappar.com/sitemap.xml
+Sitemap: https://brickpussel.skolappar.org/sitemap.xml
